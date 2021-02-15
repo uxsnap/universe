@@ -5,12 +5,13 @@ export const randomFromArr = arr => arr[randomNumberTo(arr.length)];
 export const randomRgbColor = () => [randomNumberTo(255), randomNumberTo(255), randomNumberTo(255)];
 
 const starColors = [
-  [220, 20, 20], // red
-  [220, 107, 20], // orange
-  [245, 253, 23], // yellow
-  [31, 189, 25], // green
-  [250, 255, 255], // white
-  [84, 201, 225] // blue
+  // 0xd1310d,
+  // 0xffb81f,
+  0x28454a,
+  0xdcc494,
+  0xcfc5a4,
+  0x063c5c,
+  0x5691a4
 ];
 
 export const randomStarColor = () => {

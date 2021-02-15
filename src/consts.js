@@ -9,7 +9,7 @@ import sandy from './assets/sandy.jpg';
 import whiteMoon from './assets/white_moon.jpg';
 
 export const VELOCITY = 0.01;
-export const Z_CAMERA = 10;
+export const Z_CAMERA = 100;
 
 export const PLANETS_TEXTURES = [
   moonish,
