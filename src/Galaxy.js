@@ -63,12 +63,12 @@ export class Galaxy {
     this.glows = [glow2, glow1];
 
     for (let i = 5000; i < amount; i++) {
-      const r = Math.random() * 12 + i / 700;
+      const r = Math.random() * 12 + i / 500;
       const phi = i / 7000 * Math.PI + Math.random() * 2;
 
       const x = Math.sin(phi) * r;
       const z = Math.cos(phi) * r;
-      const y = Math.random() - 2;
+      const y = Math.random() * 10;
 
       vertices.push(x, y, z);
 

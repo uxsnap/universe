@@ -17,3 +17,34 @@ const starColors = [
 export const randomStarColor = () => {
   return randomFromArr(starColors);
 };
+
+export const newCoordsIn3D = (r, phi, theta) => {
+  return {
+    x: r * Math.sin(theta) * Math.cos(phi),
+    y: r * Math.sin(theta) * Math.sin(phi),
+    z: r * Math.cos(theta)
+  };
+};
+
+export let LehrmerSeed = 0x41A7; // 16807
+const m = 0x7fffffff; // 2 147 483 647 ( 2^31 - 1 )
+
+export const setLehrmer = (x, y, z) => {
+  // LehrmerSeed = x * 1024 * 1024 + y * 1024 + z;
+  LehrmerSeed = x * LehrmerInt(0, 40) * LehrmerInt(0, 40) + y * LehrmerInt(0, 40) + z;
+  // console.log(LehrmerSeed);
+};
+
+export const getLehrmer = () => LehrmerSeed;
+
+export const Lehrmer = () => {
+  const product = LehrmerSeed * 48271;
+  let x = (product & m) + (product >> 31);
+  x = (x & m) + (x >> 31);
+  LehrmerSeed = x;
+  return x;
+};
+
+export const LehrmerInt = (min, max) => {
+  return (Lehrmer() % (max - min)) + min;
+}
