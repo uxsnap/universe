@@ -33,7 +33,8 @@ export class InitScene {
   }
 
   removeObjectsFromScene(generatedObject) {
-    this._scene.remove(generatedObject);
+    if (Array.isArray(generatedObject)) generatedObject.forEach((item) => this._scene.remove(item));
+    else this._scene.remove(generatedObject);
   }
 
   changeCameraPosition(newZ) {

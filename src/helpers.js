@@ -5,17 +5,28 @@ export const randomFromArr = arr => arr[randomNumberTo(arr.length)];
 export const randomRgbColor = () => [randomNumberTo(255), randomNumberTo(255), randomNumberTo(255)];
 
 const starColors = [
-  // 0xd1310d,
-  // 0xffb81f,
-  0x28454a,
-  0xdcc494,
-  0xcfc5a4,
-  0x063c5c,
-  0x5691a4
+  0x460b70,
+  0xb9f75c,
+  0x574366,
+  0xbf5300,
+  0x9d60b5,
+  0x7605ab,
+  0x765396,
+  0x6c508a,
+  0x220e82,
+  0xffae6b,
+  0xd0bade,
+  0xb36270,
+  0xa87e36,
+  0x9fa0b3,
+  0x7d1d25,
+  0x3e6bab,
+  0x2a4b8c,
+  0x1f1b96,
 ];
 
 export const randomStarColor = () => {
-  return randomFromArr(starColors);
+  return starColors[LehrmerInt(0, starColors.length)];
 };
 
 export const newCoordsIn3D = (r, phi, theta) => {
@@ -48,3 +59,36 @@ export const Lehrmer = () => {
 export const LehrmerInt = (min, max) => {
   return (Lehrmer() % (max - min)) + min;
 }
+
+
+
+export const vertexShader =  `
+  attribute float size;
+  attribute vec3 customColor;
+
+  varying vec3 vColor;
+
+  void main() {
+    vColor = customColor;
+
+    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+    gl_PointSize = size * ( 1000.0 / -mvPosition.z );
+
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`;
+
+export const fragmentShader = `
+  uniform vec3 color;
+  uniform sampler2D pointTexture;
+
+  varying vec3 vColor;
+
+  void main() {
+
+    gl_FragColor = vec4( color * vColor, 2 );
+    gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+
+  }
+`;

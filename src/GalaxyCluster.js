@@ -1,5 +1,7 @@
 import * as THREE from 'three/build/three.module.js';
-import { LehrmerInt, getLehrmer, Lehrmer, setLehrmer } from './helpers';
+import { LehrmerInt, getLehrmer, Lehrmer, setLehrmer, randomStarColor } from './helpers';
+import glow from './assets/glow.png';
+import { Galaxy } from './Galaxy';
 
 export class GalaxyCluster {
   constructor(startPos) {
@@ -9,46 +11,50 @@ export class GalaxyCluster {
   galaxyExists(x, y, z) {
     // console.log(getLehrmer())
     setLehrmer(x, y, z);
-    return LehrmerInt(0, 20) === 1;
+    return LehrmerInt(0, 10000) === 1;
     // Lehrmer();
   }
 
-  generateCluster(height, width, offset) {
-     const geometry = new THREE.BufferGeometry();
+ generateCluster(height, width, offset) {
+    let xSectors = width / 4;
+    let ySectors = height / 4;
+    let zSectors = 80;
 
-    let xSectors = width / 16;
-    let ySectors = height / 16;
-    let zSectors = 50;
+    const distantStars = [];
+    const galaxies = [];
 
-    // const { x: cX, y: cY, z: cZ } = position;
-    // console.log(this.startPos, position);
-    // console.log(cX, cY, cZ);
-    const vertices = [];
-
-    // let xOffset = cX - this.startPos.x;
-    // let yOffset = cY - this.startPos.y;
-    // let zOffset = cZ - this.startPos.z;
+    const texture = new THREE.TextureLoader().load(glow);
 
     for (let xi = 0; xi < xSectors; xi++) {
       for (let yj = 0; yj < ySectors; yj++) {
         for (let zk = 0; zk < zSectors; zk++) {
           if (this.galaxyExists(xi + offset.x, yj + offset.y, zk + offset.z)) {
-            const x = xi * 8 - 200;
-            const y = yj * 8 - 200;
-            const z = zk * 8 - 200;
-
-            vertices.push(x, y, z);
+            galaxies.push(...this.createGalaxy(xi, yj, zk));
           }
         }
       }
     }
 
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    return galaxies;
+  }
 
-    const material = new THREE.PointsMaterial( { color: 0x888888 } );
+  createGalaxy(x, y, z) {
+    const GALAXY_OFFSET = (val) => val * 8 - 300;
 
-    const points = new THREE.Points( geometry, material );
+    const object = Galaxy.create({
+      glowScale: { scaleX: 20, scaleY: 20, scaleZ: 20 },
+      glowColor: 0xf3f3f3,
+      galaxyWidth: LehrmerInt(0, 10),
+      galaxyAngle: LehrmerInt(0, 7),
+      galaxyScale: .3,
+      position: {
+        x: GALAXY_OFFSET(x),
+        y: GALAXY_OFFSET(y),
+        z: GALAXY_OFFSET(z)
+      },
+      starsAmount: LehrmerInt(500, 3000)
+    });
     
-    return points;
+    return object;
   }
 }

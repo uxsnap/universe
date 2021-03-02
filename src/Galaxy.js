@@ -17,15 +17,14 @@ import {
   Sprite,
   Vector2
 } from 'three/build/three.module.js';
-import { randomStarColor } from './helpers';
+import { randomStarColor, vertexShader, fragmentShader, LehrmerInt } from './helpers';
 import roundPoint from './assets/roundPoint.png';
 import glow from './assets/glow.png';
 
 export class Galaxy {
-  constructor() {
-    const amount = 50000;
-    const r = 50;
-    
+  static create({ glowScale, glowColor, position, starsAmount, galaxyScale, galaxyWidth, galaxyAngle }) {
+    const amount = starsAmount;
+
     const vertices = [];
     const colors = [];
     const sizes = [];
@@ -35,9 +34,9 @@ export class Galaxy {
 
     const glowmap = ImageUtils.loadTexture(glow);
 
-    const glow1 = new Sprite(
+    const firstGlow = new Sprite(
       new SpriteMaterial({
-        color: 0xffffff,
+        color: glowColor,
         map: glowmap,
         transparent: true,
         blending: AdditiveBlending,
@@ -45,9 +44,9 @@ export class Galaxy {
       })
     );
 
-    const glow2 = new Sprite(
+    const secondGlow = new Sprite(
       new SpriteMaterial({
-        color: 0xf3f3f3,
+        color: glowColor,
         map: glowmap,
         transparent: true,
         blending: AdditiveBlending,
@@ -55,77 +54,61 @@ export class Galaxy {
       })
     );
 
-    glow2.scale.set(200, 50, 100);
-    glow2.position.set(0, 0, 0.1);
+    const { scaleX, scaleY, scaleZ } = glowScale;
+    const { x, y, z } = position;
 
-    glow1.scale.set(100, 100, 100);
+    secondGlow.scale.set(scaleX, scaleY, scaleZ);
+    secondGlow.position.set(x, y, z);
 
-    this.glows = [glow2, glow1];
+    firstGlow.scale.set(scaleX, scaleY / 2, scaleZ / 2);
+    firstGlow.position.set(x, y, z);
 
-    for (let i = 5000; i < amount; i++) {
-      const r = Math.random() * 12 + i / 500;
-      const phi = i / 7000 * Math.PI + Math.random() * 2;
+    const glows = [
+      secondGlow, 
+      firstGlow
+    ];
 
-      const x = Math.sin(phi) * r;
-      const z = Math.cos(phi) * r;
-      const y = Math.random() * 10;
+    const starColor = randomStarColor();
+
+    for (let i = 0; i < amount; i++) {
+      const r = Math.random() * 5 + i / 100;
+      const phi = i / 500 * Math.PI + Math.random();
+
+      const x = Math.sin(phi) * r * galaxyWidth;
+      const z = Math.cos(phi) * r * galaxyAngle;
+      const y = Math.random() * galaxyAngle;
 
       vertices.push(x, y, z);
 
-      color.setHex(randomStarColor());
-      // color.setHSL( 0.5 + 0.1 * ( i / amount ), 0.7, 0.5 );
+      color.setHex(starColor);
       color.toArray(colors, i * 3);
-      sizes[ i ] = .5;
-      // colors.push( color.r, color.g, color.b );
+      sizes[i] = .5;
     }
 
     geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
     geometry.setAttribute('customColor', new Float32BufferAttribute(colors, 3));
-    geometry.setAttribute( 'size', new Float32BufferAttribute( sizes, 1 ) );
+    geometry.setAttribute('size', new Float32BufferAttribute( sizes, 1 ) );
 
     const material = new ShaderMaterial({ 
       uniforms: {
         color: { value: new Color( 0xffffff ) },
-        pointTexture: { value: new TextureLoader().load( roundPoint ) },
+        pointTexture: { value: new TextureLoader().load(roundPoint) },
       },
-      vertexShader: `
-        attribute float size;
-        attribute vec3 customColor;
-
-        varying vec3 vColor;
-
-        void main() {
-
-          vColor = customColor;
-
-          vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-
-          gl_PointSize = size * ( 1000.0 / -mvPosition.z );
-
-          gl_Position = projectionMatrix * mvPosition;
-
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 color;
-        uniform sampler2D pointTexture;
-
-        varying vec3 vColor;
-
-        void main() {
-
-          gl_FragColor = vec4( color * vColor, 2 );
-          gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-
-        }
-      `,
+      vertexShader,
+      fragmentShader,
       blending: AdditiveBlending,
       transparent: true,
       depthTest: false,
     });
 
-    this.galaxy = new Points(geometry, material);
-    this.galaxy.name = "Galaxy";
-  }
+    const newGalaxy = new Points(geometry, material);
 
+    newGalaxy.position.x = x;
+    newGalaxy.position.y = y;
+    newGalaxy.position.z = z;
+
+    newGalaxy.scale.set(galaxyScale, galaxyScale, galaxyScale);
+
+    return [newGalaxy, ...glows];
+  }
 }

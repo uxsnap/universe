@@ -84,13 +84,14 @@ document.body.appendChild(
 );
 
 let startPos = threeScene.getCamera().position;
-let offset = { x: 0, y: 0, z: 0};
+let offset = { x: 0, y: 0, z: 0 };
 
 let generatedGalaxies = new GalaxyCluster();
 let cluster = generatedGalaxies.generateCluster(height, width, offset);
-
-
 threeScene.addObjectsToScene(cluster);
+
+const light = new THREE.DirectionalLight( 0xffffff, 1 );
+threeScene.addObjectsToScene( light );
 
 function animate() {
   threeScene.render();
@@ -98,6 +99,7 @@ function animate() {
 }
 
 const onKeyPress = (e) => {
+  // light.position.set( 1, 1, 1 ).normalize();
   let theta = threeScene.getControls().getPolarAngle();
   let phi = threeScene.getControls().getAzimuthalAngle();
   const { x, y, z } = newCoordsIn3D(100, phi, theta);
