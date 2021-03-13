@@ -31,9 +31,9 @@ export const randomStarColor = () => {
 
 export const newCoordsIn3D = (r, phi, theta) => {
   return {
-    x: r * Math.sin(theta) * Math.cos(phi),
-    y: r * Math.sin(theta) * Math.sin(phi),
-    z: r * Math.cos(theta)
+    x: Math.cos(theta) * Math.cos(phi),
+    z: Math.cos(theta) * Math.sin(phi),
+    y: Math.sin(theta),
   };
 };
 
@@ -42,7 +42,7 @@ const m = 0x7fffffff; // 2 147 483 647 ( 2^31 - 1 )
 
 export const setLehrmer = (x, y, z) => {
   // LehrmerSeed = x * 1024 * 1024 + y * 1024 + z;
-  LehrmerSeed = x * LehrmerInt(0, 40) * LehrmerInt(0, 40) + y * LehrmerInt(0, 40) + z;
+  LehrmerSeed = x * LehrmerInt(0, 100) * LehrmerInt(0, 100) + y * LehrmerInt(0, 100) + z;
   // console.log(LehrmerSeed);
 };
 

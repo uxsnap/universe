@@ -76,7 +76,7 @@ export class Galaxy {
 
       const x = Math.sin(phi) * r * galaxyWidth;
       const z = Math.cos(phi) * r * galaxyAngle;
-      const y = Math.random() * galaxyAngle;
+      const y = Math.cos(phi) * galaxyAngle;
 
       vertices.push(x, y, z);
 

@@ -16,7 +16,7 @@ export class InitScene {
     const axesHelper = new THREE.AxesHelper( 3 );
     this._controls = new OrbitControls(this._camera, this._renderer.domElement);
     // 
-    // this._controls.enableZoom = false;
+    this._controls.enableZoom = false;
 
     this._scene.add(axesHelper);
 

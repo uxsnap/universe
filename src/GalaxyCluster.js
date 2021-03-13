@@ -16,9 +16,12 @@ export class GalaxyCluster {
   }
 
  generateCluster(height, width, offset) {
-    let xSectors = width / 4;
-    let ySectors = height / 4;
-    let zSectors = 80;
+    let xSectors = 100;
+     // width / 6;
+    let ySectors = 100;
+     // height / 6;
+    let zSectors = 100;
+     // 120;
 
     const distantStars = [];
     const galaxies = [];
@@ -39,14 +42,14 @@ export class GalaxyCluster {
   }
 
   createGalaxy(x, y, z) {
-    const GALAXY_OFFSET = (val) => val * 8 - 300;
+    const GALAXY_OFFSET = (val) => val * 8 - 700;
 
     const object = Galaxy.create({
       glowScale: { scaleX: 20, scaleY: 20, scaleZ: 20 },
       glowColor: 0xf3f3f3,
       galaxyWidth: LehrmerInt(0, 10),
-      galaxyAngle: LehrmerInt(0, 7),
-      galaxyScale: .3,
+      galaxyAngle: LehrmerInt(0, 10),
+      galaxyScale: .5,
       position: {
         x: GALAXY_OFFSET(x),
         y: GALAXY_OFFSET(y),

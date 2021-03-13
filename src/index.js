@@ -22,7 +22,7 @@ import { Lehrmer, LehrmerSeed, newCoordsIn3D } from './helpers';
 
 // function init() {
 //   scene = new THREE.Scene();
-//   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+//   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10 );
 //   renderer = new THREE.WebGLRenderer( { antialias: true } );
 
 //   controls = new OrbitControls(camera, renderer.domElement);
@@ -98,18 +98,28 @@ function animate() {
   requestAnimationFrame(animate); 
 }
 
+
+const Deg0 = 0;
+const Deg90 = Math.PI / 2; 
+const Deg180 = Math.PI;
+const Deg270 = Math.PI * 3 / 2;
+
+console.log(Deg90, Deg270, Deg180);
 const onKeyPress = (e) => {
-  // light.position.set( 1, 1, 1 ).normalize();
-  let theta = threeScene.getControls().getPolarAngle();
-  let phi = threeScene.getControls().getAzimuthalAngle();
-  const { x, y, z } = newCoordsIn3D(100, phi, theta);
+  let theta = Math.abs(threeScene.getControls().getPolarAngle());
+  let phi = Math.abs(threeScene.getControls().getAzimuthalAngle());
+  // console.log(Math.abs(phi), Deg0 < Math.abs(phi) && Deg90 > Math.abs(phi));
+  const { x, y, z } = newCoordsIn3D(5, phi, theta);
   if (/[wasder]/.test(e.key)) {
-    if (e.key === 'w') offset.x += x; 
-    else if (e.key === 's') offset.x -= x; 
-    else if (e.key === 'e') offset.y += y;
-    else if (e.key === 'r') offset.y -= y;
-    else if (e.key === 'a') offset.z -= z; 
-    else if (e.key === 'd') offset.z += z; 
+    if (e.key === 'w') {
+      // offset.z += 2.5;
+      offset.x += 5;
+    } 
+    else if (e.key === 's') offset.x -= 5; 
+    else if (e.key === 'e') offset.y += 5;
+    else if (e.key === 'r') offset.y -= 5;
+    else if (e.key === 'a') offset.z -= 5; 
+    else if (e.key === 'd') offset.z += 5 ; 
     threeScene.removeObjectsFromScene(cluster);
     cluster = generatedGalaxies.generateCluster(height, width, offset);
     threeScene.addObjectsToScene(cluster);
